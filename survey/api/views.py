@@ -25,15 +25,15 @@ class ServeysViews(APIView):
 class EditSurveysViews(APIView):
     """Редактирование опроса"""
 
-    def post(self, request, pk, type_of_user):
+    def post(self, request, type_of_user):
         if type_of_user == 1:
             data = request.data
             print(data)
             post_serveys = EditSurveysSerializer(data=data)
             if post_serveys.is_valid():
-                servey = Surveys.objects.get(id=pk)
+                servey = Surveys.objects.get(id=data['id'])
                 servey.name = data['name']
-                servey.date_start = data['date_start']
+                servey.date_end = data['date_end']
                 servey.description = data['description']
                 servey.save()
             return Response(201)
@@ -90,13 +90,13 @@ class AddQuestionsViews(APIView):
 class EditQuestionsViews(APIView):
     """Редактирование вопроса"""
 
-    def post(self, request, pk, type_of_user):
+    def post(self, request, type_of_user):
         if type_of_user == 1:
             data = request.data
             print(data)
             post_question = EditQuestionsSerializer(data=data)
             if post_question.is_valid():
-                question = Questions.objects.get(id=pk)
+                question = Questions.objects.get(id=data['id'])
                 print(question)
                 question.question = data['question']
                 question.question_type = data['question_type']
