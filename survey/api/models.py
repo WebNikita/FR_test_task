@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.contenttypes.models import ContentType
+from django.conf import settings
 from django.urls import reverse
 
 
@@ -9,7 +10,7 @@ class Surveys(models.Model):
         verbose_name = 'Опросы'
         verbose_name_plural = 'Опросы'
 
-    name = models.CharField(max_length=200, db_index=True, verbose_name='Название товара')
+    name = models.CharField(max_length=200, db_index=True, verbose_name='Название опроса')
     date_start = models.DateField(verbose_name='Начало опроса')
     date_end = models.DateField(verbose_name='Конец опроса')
     description = models.CharField(max_length=200, db_index=True, verbose_name='Описание')
@@ -17,13 +18,27 @@ class Surveys(models.Model):
     def __str__(self):
         return self.name
 
-class User(models.Model):
+class Guest(models.Model):
     
     class Meta:
 
-        verbose_name = 'Пользователи'
-        verbose_name_plural = 'Пользователи'
+        verbose_name = 'Гости'
+        verbose_name_plural = 'Гости'
+
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    serveys = models.ManyToManyField(Surveys, null = True)
     
+    def __str__(self):
+        return self.id
+
+class Creator(models.Model):
+    
+    class Meta:
+
+        verbose_name = 'Создатель опросов'
+        verbose_name_plural = 'Создатель опросов'
+
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     serveys = models.ManyToManyField(Surveys, null = True)
     
     def __str__(self):
